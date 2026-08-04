@@ -108,9 +108,11 @@ def retrieve(
 
 if __name__ == "__main__":
     test_queries = [
-        "What is the tuition fee at RMIT Vietnam?",
-        "How do I book a library study room?",
-        "What scholarships are available for international students?",
+        # News (Shopee Seller Education)
+        "Quy trình Shopee thanh toán cho Người bán",
+        "Các phương thức vận chuyển Shopee hỗ trợ",
+        # Legal (luật VN)
+        "Điều kiện thành lập doanh nghiệp theo Luật Doanh nghiệp 2020",
         "xyzabc123nonsense",  # Query không có kết quả → test fallback
     ]
 

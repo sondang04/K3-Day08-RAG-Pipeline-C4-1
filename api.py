@@ -1,5 +1,5 @@
 """
-FastAPI Backend — University Services RAG Chatbot
+FastAPI Backend — E-Commerce RAG Chatbot (Luật TMĐT & Người bán Shopee)
 Kết nối RAG Retrieval (Task 9) và Generation (Task 10).
 
 Chạy:
@@ -26,8 +26,8 @@ PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 app = FastAPI(
-    title="University Services RAG Chatbot API",
-    description="API cho chatbot hỏi đáp về dịch vụ và chính sách đại học",
+    title="E-Commerce RAG Chatbot API",
+    description="API cho chatbot hỏi đáp về TMĐT Việt Nam (Luật TMĐT, Luật Doanh nghiệp, hướng dẫn Người bán Shopee)",
     version="1.0.0",
 )
 

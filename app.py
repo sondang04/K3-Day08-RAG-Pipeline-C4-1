@@ -1,5 +1,5 @@
 """
-RAG Chatbot — University Services (Starter Template)
+RAG Chatbot — E-Commerce VN (Luật TMĐT & Người bán Shopee)
 Streamlit app kết nối RAG Retrieval (Task 9) và Generation (Task 10).
 
 Chạy:
@@ -24,8 +24,8 @@ sys.path.insert(0, str(PROJECT_ROOT))
 # =============================================================================
 
 st.set_page_config(
-    page_title="University Services RAG Chatbot",
-    page_icon="🎓",
+    page_title="E-Commerce RAG Chatbot",
+    page_icon="🛒",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -35,18 +35,18 @@ st.set_page_config(
 # =============================================================================
 
 with st.sidebar:
-    st.title("🎓 University Services RAG")
-    st.caption("Trợ lý hỏi đáp về dịch vụ và chính sách đại học (học phí, học bổng, ký túc xá, thư viện)")
+    st.title("🛒 E-Commerce RAG")
+    st.caption("Trợ lý hỏi đáp về TMĐT Việt Nam (Luật Doanh nghiệp, Luật TMĐT, hướng dẫn Người bán Shopee)")
 
     st.divider()
 
     st.subheader("💡 Câu hỏi gợi ý")
     suggestions = [
-        "Học phí tại RMIT Vietnam là bao nhiêu?",
-        "Làm sao để đặt phòng học nhóm ở thư viện?",
-        "Điều kiện xin học bổng Academic Achievement?",
-        "Dịch vụ hỗ trợ chỗ ở cho sinh viên như thế nào?",
-        "Cách đăng ký học phần qua myRMIT?",
+        "Quy trình Shopee thanh toán cho Người bán?",
+        "Quy trình Trả hàng/Hoàn tiền dành cho Người bán?",
+        "Shopee hỗ trợ những phương thức vận chuyển nào?",
+        "Quy định về đặt tên sản phẩm trên Shopee?",
+        "Luật TMĐT 2025 quy định gì về sàn giao dịch TMĐT?",
     ]
     for s in suggestions:
         if st.button(s, use_container_width=True, key=f"sug_{s[:20]}"):
@@ -73,8 +73,8 @@ if "pending_query" not in st.session_state:
 # MAIN CHAT AREA
 # =============================================================================
 
-st.title("🎓 University Services RAG Chatbot")
-st.caption("Hệ thống hỏi đáp thông tin dịch vụ đại học (Học phí, Học bổng, Ký túc xá, Thư viện)")
+st.title("🛒 E-Commerce RAG Chatbot")
+st.caption("Hệ thống hỏi đáp TMĐT Việt Nam (Luật TMĐT, Luật Doanh nghiệp, Người bán Shopee)")
 
 # Hiển thị lịch sử chat
 for msg in st.session_state.messages:

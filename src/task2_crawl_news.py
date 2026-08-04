@@ -1,8 +1,8 @@
 """
-Task 2 — Crawl bài viết/thông báo về dịch vụ đại học.
+Task 2 — Crawl bài viết hướng dẫn Người bán trên Shopee (Shopee Seller Education).
 
 Hướng dẫn:
-    1. Crawl tối thiểu 5 bài viết từ trang công khai của một trường đại học.
+    1. Crawl tối thiểu 5 bài viết từ trang công khai.
     2. Sử dụng Crawl4AI hoặc thư viện crawling tương tự.
     3. Lưu output vào data/landing/news/
     4. Mỗi bài lưu 1 file JSON với metadata (url, title, date_crawled, content).
@@ -26,7 +26,7 @@ def setup_directory():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
-# TODO: Điền danh sách URL category/trang chứa bài viết cần crawl
+# Trang category của Shopee Seller Education — nguồn 7 bài trong data/landing/news/
 CATEGORY_URLS = [
     "https://banhang.shopee.vn/edu/category?sub_cat_id=2197",
 ]

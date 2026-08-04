@@ -79,10 +79,10 @@ Xem code mẫu (DeepEval/RAGAS/TruLens) chi tiết trong `README.md` gốc mục
 
 | Thành viên | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+|Đặng Thái Nam Sơn | 01431 | Team lead | Hoàn tất |
+|Trần Đình Đăng | 01998 | Frontend & UI | Hoàn tất |
+|Nguyễn Nam Anh | 01703 | Data scientist | Hoàn tất |
+|Chu Thành Dũng | 01405 | Eval & Golden set | Hoàn tất |
 
 ---
 
