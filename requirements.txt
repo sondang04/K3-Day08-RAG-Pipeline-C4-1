@@ -33,9 +33,12 @@ fastapi>=0.100.0
 uvicorn[standard]>=0.23.0
 
 # Group project - Evaluation
-ragas==0.1.21
+ragas>=0.2.0
+
 datasets>=2.14.0
 langchain-openai>=0.1.0
+#langchain-core>=0.1.0,<0.3.0
+
 
 # Testing (dung de cham diem bai ca nhan)
 pytest>=7.0.0

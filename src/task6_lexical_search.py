@@ -15,10 +15,51 @@ BM25 hoạt động thế nào:
     - k1=1.5 (term saturation), b=0.75 (length normalization)
 """
 
+import re
 from pathlib import Path
+import numpy as np
+from rank_bm25 import BM25Okapi
 
-# TODO: Load corpus từ data/standardized/ hoặc từ vector store
-CORPUS: list[dict] = []  # List of {'content': str, 'metadata': dict}
+STANDARDIZED_DIR = Path(__file__).parent.parent / "data" / "standardized"
+
+
+def normalize_text(text: str) -> str:
+    """Chuẩn hóa text trước khi tokenize để query và corpus đồng nhất."""
+    text = text.lower()
+    text = re.sub(r"[^\w\s]", " ", text)
+    return " ".join(text.split())
+
+
+def load_corpus() -> list[dict]:
+    """Load toàn bộ file markdown từ data/standardized/ làm corpus."""
+    corpus = []
+    if not STANDARDIZED_DIR.exists():
+        return corpus
+
+    for filepath in STANDARDIZED_DIR.rglob("*.md"):
+        if filepath.name.startswith("."):
+            continue
+
+        text = filepath.read_text(encoding="utf-8").strip()
+        if not text:
+            continue
+
+        paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+        for idx, paragraph in enumerate(paragraphs):
+            corpus.append({
+                "content": paragraph,  # Giữ nguyên định dạng gốc để LLM sinh câu trả lời
+                "metadata": {
+                    "source": str(filepath.relative_to(STANDARDIZED_DIR)),
+                    "chunk_id": f"{filepath.stem}_{idx}"
+                }
+            })
+    return corpus
+
+
+# Pre-load corpus và khởi tạo chỉ mục BM25 duy nhất 1 lần để tối ưu hiệu năng
+CORPUS: list[dict] = load_corpus()
+_TOKENIZED_CORPUS = [normalize_text(doc["content"]).split() for doc in CORPUS]
+_BM25_INDEX = BM25Okapi(_TOKENIZED_CORPUS) if _TOKENIZED_CORPUS else None
 
 
 def build_bm25_index(corpus: list[dict]):
@@ -28,15 +69,11 @@ def build_bm25_index(corpus: list[dict]):
     Args:
         corpus: List of {'content': str, 'metadata': dict}
     """
-    # TODO: Implement BM25 index
-    #
-    # from rank_bm25 import BM25Okapi
-    #
-    # # Tokenize - có thể đơn giản split(), hoặc dùng underthesea cho tiếng Việt
-    # tokenized_corpus = [doc["content"].lower().split() for doc in corpus]
-    # bm25 = BM25Okapi(tokenized_corpus)
-    # return bm25
-    raise NotImplementedError("Implement build_bm25_index")
+    if not corpus:
+        return None
+
+    tokenized_corpus = [normalize_text(doc["content"]).split() for doc in corpus]
+    return BM25Okapi(tokenized_corpus)
 
 
 def lexical_search(query: str, top_k: int = 10) -> list[dict]:
@@ -55,29 +92,30 @@ def lexical_search(query: str, top_k: int = 10) -> list[dict]:
         }
         Sorted by score descending.
     """
-    # TODO: Implement lexical search
-    #
-    # tokenized_query = query.lower().split()
-    # scores = bm25.get_scores(tokenized_query)
-    #
-    # # Get top_k indices
-    # import numpy as np
-    # top_indices = np.argsort(scores)[::-1][:top_k]
-    #
-    # results = []
-    # for idx in top_indices:
-    #     if scores[idx] > 0:
-    #         results.append({
-    #             "content": CORPUS[idx]["content"],
-    #             "score": float(scores[idx]),
-    #             "metadata": CORPUS[idx]["metadata"]
-    #         })
-    # return results
-    raise NotImplementedError("Implement lexical_search")
+    if not CORPUS or _BM25_INDEX is None:
+        return []
+
+    tokenized_query = normalize_text(query).split()
+    if not tokenized_query:
+        return []
+
+    scores = _BM25_INDEX.get_scores(tokenized_query)
+    ranked_indices = np.argsort(scores)[::-1][:top_k]
+
+    results = []
+    for idx in ranked_indices:
+        if scores[idx] > 0:
+            results.append({
+                "content": CORPUS[idx]["content"],
+                "score": float(scores[idx]),
+                "metadata": CORPUS[idx]["metadata"]
+            })
+
+    return results
 
 
 if __name__ == "__main__":
-    # Test
-    results = lexical_search("tuition fee payment methods", top_k=5)
+    results = lexical_search("doanh nghiệp", top_k=5)
+    print(f"Found {len(results)} results:")
     for r in results:
-        print(f"[{r['score']:.3f}] {r['content'][:100]}...")
+        print(f"[{r['score']:.3f}] {r['metadata']['source']} -> {r['content'][:100]}...")
