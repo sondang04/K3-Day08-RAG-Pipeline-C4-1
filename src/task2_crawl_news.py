@@ -31,6 +31,7 @@ def setup_directory():
 
 # TODO: Điền danh sách URL bài viết cần crawl
 ARTICLE_URLS = [
+    "https://banhang.shopee.vn/edu/category?sub_cat_id=2197",
     # Ví dụ (trang công khai RMIT Vietnam):
     # "https://www.rmit.edu.vn/libraryvn/...",
     # "https://www.rmit.edu.vn/students/...",
