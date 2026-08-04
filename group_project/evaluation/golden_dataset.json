@@ -73,5 +73,45 @@
     "question": "Nghĩa vụ chung của doanh nghiệp theo Luật Doanh nghiệp 2020 là gì?",
     "expected_answer": "Doanh nghiệp phải đáp ứng đủ điều kiện kinh doanh khi kinh doanh ngành, nghề đầu tư kinh doanh có điều kiện; thực hiện đầy đủ, kịp thời nghĩa vụ về đăng ký doanh nghiệp, thuế và các nghĩa vụ tài chính khác.",
     "expected_context": "Điều 8. Nghĩa vụ của doanh nghiệp - Luật Doanh nghiệp 2020"
+  },
+  {
+    "question": "Dịch vụ Quick Funds dành cho Người bán trên Shopee cung cấp giải pháp gì?",
+    "expected_answer": "Là dịch vụ hỗ trợ Người bán nhận tiền hàng tức thì.",
+    "expected_context": "Mục 1.4 Dịch vụ Quick Funds - Bài viết Hướng dẫn Shopee (article_01.md)"
+  },
+  {
+    "question": "Hệ thống điểm phạt áp dụng đối với người bán vi phạm chính sách của Shopee được gọi là gì?",
+    "expected_answer": "Hệ thống điểm phạt Sao Quả Tạ.",
+    "expected_context": "Mục 2.4 Sao Quả Tạ - Bài viết Hướng dẫn Shopee (article_02.md)"
+  },
+  {
+    "question": "Các hành vi gian lận như giao dịch ngoài sàn và vi phạm giá ảo trên Shopee bị xử lý như thế nào?",
+    "expected_answer": "Shopee có quy định hạn chế, khóa tài khoản hoặc vô hiệu hóa tài khoản bán hàng tùy theo mức độ vi phạm chính sách cạnh tranh và tiêu chuẩn cộng đồng.",
+    "expected_context": "Mục 4. Các hành vi gian lận/vi phạm - Bài viết Hướng dẫn Shopee (article_02.md)"
+  },
+  {
+    "question": "Các loại sản phẩm thuộc danh mục cấm hoặc kiểm soát khi đăng bán trên Shopee bao gồm những gì?",
+    "expected_answer": "Bao gồm thực phẩm chức năng, mỹ phẩm, thuốc không kê đơn (cần chứng từ kiểm soát), hàng giả/nhái, hàng nguy hiểm, thực phẩm tươi sống hoặc hàng có hạn sử dụng dưới 30 ngày.",
+    "expected_context": "Mục 1. Quy định về đăng tải sản phẩm - Bài viết Hướng dẫn Shopee (article_03.md)"
+  },
+  {
+    "question": "Các gói dịch vụ hỗ trợ vận hành người bán trên Sàn Shopee bao gồm những gói chính nào?",
+    "expected_answer": "Bao gồm Super Pi (trợ lý vận hành), PiBeauty (đăng sản phẩm và tạo banner), PiChat (dịch vụ chat trực tuyến) và PiHUB (giải pháp vận hành toàn diện).",
+    "expected_context": "Mục 2. Các dịch vụ hỗ trợ vận hành - Bài viết Hướng dẫn Shopee (article_04.md)"
+  },
+  {
+    "question": "Quy trình vận chuyển và đóng gói hàng hóa trên Shopee cần tuân thủ những yêu cầu cơ bản nào?",
+    "expected_answer": "Người bán cần tuân thủ đúng thời hạn xử lý đơn cho từng kênh (Nhanh, Hỏa tốc, Trong ngày), đóng gói hàng chuẩn quy cách Shopee và quản lý các đơn hàng giao không thành công.",
+    "expected_context": "Tổng quan vận chuyển & thời hạn xử lý đơn - Bài viết Hướng dẫn Shopee (article_05.md)"
+  },
+  {
+    "question": "Người bán cần thực hiện những thủ tục gì để bảo vệ tài khoản và nhãn hiệu khi kinh doanh trực tuyến?",
+    "expected_answer": "Cần cập nhật thông tin thuế, thông tin định danh, tuân thủ tiêu chuẩn cộng đồng và đăng ký Thương hiệu áp dụng cho các sản phẩm có thương hiệu.",
+    "expected_context": "Tổng quan quản lý Shop & Thương hiệu - Bài viết Hướng dẫn Shopee (article_02.md & article_03.md)"
+  },
+  {
+    "question": "Phương thức thanh toán và khấu trừ chi phí vận hành gian hàng trên sàn TMĐT diễn ra như thế nào?",
+    "expected_answer": "Thực hiện liên kết Số dư TK Shopee để theo dõi doanh thu, thanh toán phí dịch vụ và sử dụng Số dư TK Quảng cáo để quản lý các chiến dịch Marketing.",
+    "expected_context": "Liên kết số dư & Số dư TK Quảng cáo - Bài viết Hướng dẫn Shopee (article_02.md & article_04.md)"
   }
 ]
