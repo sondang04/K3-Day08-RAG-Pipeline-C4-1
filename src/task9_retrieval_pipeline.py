@@ -35,14 +35,16 @@ from .task8_pageindex_vectorless import pageindex_search
 # CONFIGURATION
 # =============================================================================
 
-# Đã calibrate bằng cách đo trực tiếp trên corpus này (BAAI/bge-m3, 4176 chunks):
-#   Query liên quan  : 0.719 - 0.794  (thanh toán Shopee, trả hàng, vận chuyển, Luật DN)
-#   Query lạc đề/rác : 0.317 - 0.437  (chuỗi ngẫu nhiên, nấu phở, train GPU)
-# Hai nhóm tách bạch rõ → chọn ngưỡng nằm giữa (~0.58).
-# Lưu ý: bge-m3 cho cosine nền khá cao (~0.3-0.44 kể cả với text hoàn toàn lạc đề),
-# nên ngưỡng 0.3 như giá trị mẫu ban đầu nằm DƯỚI cả sàn của query rác → fallback
-# không bao giờ kích hoạt. Đổi embedding model thì phải đo lại.
-SCORE_THRESHOLD = 0.58   # Nếu best score (cosine gốc) < threshold → fallback PageIndex
+# Đã calibrate bằng cách đo trực tiếp trên corpus này
+# (paraphrase-multilingual-MiniLM-L12-v2, 384d, 4176 chunks):
+#   Query liên quan  : 0.665 - 0.760  (thanh toán Shopee, trả hàng, vận chuyển, Luật DN)
+#   Query lạc đề/rác : 0.214 - 0.367  (chuỗi ngẫu nhiên, nấu phở, train GPU)
+# Hai nhóm tách bạch rõ → chọn ngưỡng nằm giữa (~0.52).
+# CẢNH BÁO: ngưỡng này gắn chặt với embedding model. Đổi model là phải ĐO LẠI —
+# ví dụ với BAAI/bge-m3 (đo trước đây) khoảng điểm rác lên tới 0.437 nên ngưỡng
+# phải là 0.58. Giá trị mẫu 0.3 ban đầu nằm DƯỚI cả sàn query rác của cả hai model
+# → fallback không bao giờ kích hoạt.
+SCORE_THRESHOLD = 0.52   # Nếu best score (cosine gốc) < threshold → fallback PageIndex
 DEFAULT_TOP_K = 5
 RERANK_METHOD = "rrf"  # "cross_encoder" | "mmr" | "rrf"
 
