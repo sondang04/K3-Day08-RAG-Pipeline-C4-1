@@ -1,0 +1,10 @@
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x0000025B61544680>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed')': /packages/65/71/0670843133a43d43070abeb1949abfdef12a86d490bea9cd9e18e37c5ff7/tokenizers-0.22.2-cp39-abi3-win_amd64.whl
+WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x0000025B63C93C80>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed')': /packages/65/71/0670843133a43d43070abeb1949abfdef12a86d490bea9cd9e18e37c5ff7/tokenizers-0.22.2-cp39-abi3-win_amd64.whl
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2
+[notice] To update, run: C:\Users\Admin\Downloads\CodeLab08\K3-Day08-RAG-Pipeline-C4-1\.venv\Scripts\python.exe -m pip install --upgrade pip
+ERROR: THESE PACKAGES DO NOT MATCH THE HASHES FROM THE REQUIREMENTS FILE. If you have updated the package versions, please update the hashes. Otherwise, examine the package contents carefully; someone may have tampered with them.
+    unknown package:
+        Expected sha256 024c6cc0c1b085f2f91f20a3dc27b0471d021c31ce84b81be3afdc39f791fd9d
+             Got        d891a48d8f80ded5e3c0d6b0c0a264332cc8ab2d3379e93058b115d154805b8c
+
