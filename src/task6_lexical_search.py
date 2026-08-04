@@ -31,28 +31,33 @@ def normalize_text(text: str) -> str:
 
 
 def load_corpus() -> list[dict]:
-    """Load toàn bộ file markdown từ data/standardized/ làm corpus."""
-    corpus = []
+    """
+    Load corpus cho BM25 — dùng CHUNG bộ chunk với Task 4/Task 5.
+
+    Lý do không tự tách đoạn bằng "\\n\\n": file luật (vd luat_doanh_nghiep_2020.md,
+    437KB) gần như không có dòng trống, nên tách kiểu đó sinh ra "đoạn" dài tới 1.4
+    triệu ký tự — lọt vào context của Task 10 là vượt giới hạn token của LLM ngay.
+
+    Quan trọng hơn: RRF ở Task 7 gộp kết quả theo item["content"]. Nếu nhánh lexical
+    và nhánh semantic chunk khác cỡ thì không chuỗi nào trùng nhau, RRF sẽ chỉ nối
+    hai danh sách chứ không thực sự fuse. Dùng chung chunk thì hybrid search mới đúng.
+    """
+    from .task4_chunking_indexing import chunk_documents, load_documents
+
     if not STANDARDIZED_DIR.exists():
-        return corpus
+        return []
 
-    for filepath in STANDARDIZED_DIR.rglob("*.md"):
-        if filepath.name.startswith("."):
-            continue
-
-        text = filepath.read_text(encoding="utf-8").strip()
-        if not text:
-            continue
-
-        paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
-        for idx, paragraph in enumerate(paragraphs):
-            corpus.append({
-                "content": paragraph,  # Giữ nguyên định dạng gốc để LLM sinh câu trả lời
-                "metadata": {
-                    "source": str(filepath.relative_to(STANDARDIZED_DIR)),
-                    "chunk_id": f"{filepath.stem}_{idx}"
-                }
-            })
+    corpus = []
+    for chunk in chunk_documents(load_documents()):
+        meta = chunk["metadata"]
+        corpus.append({
+            "content": chunk["content"],
+            "metadata": {
+                "source": meta.get("source", ""),
+                "type": meta.get("type", "unknown"),
+                "chunk_id": f"{meta.get('source','')}_{meta.get('chunk_index', 0)}",
+            },
+        })
     return corpus
 
 

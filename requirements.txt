@@ -26,7 +26,7 @@ pageindex>=0.1.0
 openai>=1.30.0
 
 # Group project - UI
-# streamlit>=1.35.0  # Commented out - using FastAPI + HTML instead
+streamlit>=1.35.0  # UI cho app.py (song song với FastAPI + index.html)
 
 # FastAPI Backend (alternative to Streamlit)
 fastapi>=0.100.0
