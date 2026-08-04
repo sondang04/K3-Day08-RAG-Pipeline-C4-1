@@ -41,7 +41,6 @@ def convert_legal_docs():
             output_path = output_dir / f"{filepath.stem}.md"
             output_path.write_text(result.text_content, encoding="utf-8")
             print(f"  ✓ Saved: {output_path}")
-            raise NotImplementedError("Implement convert_legal_docs")
 
 
 def convert_news_articles():
@@ -65,7 +64,6 @@ def convert_news_articles():
             content = header + data.get("content_markdown", "")
             output_path.write_text(content, encoding="utf-8")
             print(f"  ✓ Saved: {output_path}")
-            raise NotImplementedError("Implement convert_news_articles")
 
 
 def convert_all():
