@@ -126,7 +126,12 @@ def format_context(chunks: list[dict]) -> str:
 # GENERATION
 # =============================================================================
 
-def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
+def generate_with_citation(
+    query: str,
+    top_k: int = TOP_K,
+    use_reranking: bool = True,
+    use_lexical: bool = True,
+) -> dict:
     """
     End-to-end RAG generation có citation.
 
@@ -148,8 +153,10 @@ def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
             'retrieval_source': str  # 'hybrid' hoặc 'pageindex'
         }
     """
-    # Step 1: Retrieve
-    chunks = retrieve(query, top_k=top_k)
+    # Step 1: Retrieve (use_reranking để so sánh A/B ở group_project/evaluation)
+    chunks = retrieve(
+        query, top_k=top_k, use_reranking=use_reranking, use_lexical=use_lexical
+    )
 
     # Không có evidence → trả lời từ chối luôn, không gọi LLM (tránh bịa đặt + tốn token)
     if not chunks:

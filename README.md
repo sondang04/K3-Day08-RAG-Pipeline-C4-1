@@ -530,39 +530,127 @@ run_dashboard()
 
 #### Deliverable Evaluation
 
-- [ ] File `group_project/evaluation/golden_dataset.json` — 15+ cặp Q&A
-- [ ] File `group_project/evaluation/eval_pipeline.py` — script chạy evaluation
-- [ ] File `group_project/evaluation/results.md` — bảng điểm + phân tích
-- [ ] So sánh A/B ít nhất 2 configs
+- [x] File `group_project/evaluation/golden_dataset.json` — **23 cặp Q&A** (yêu cầu 15+)
+- [x] File `group_project/evaluation/eval_pipeline.py` — script chạy evaluation (RAGAS)
+- [x] File `group_project/evaluation/results.md` — bảng điểm + phân tích + worst performers
+- [x] So sánh A/B ít nhất 2 configs — *Hybrid (semantic + BM25)* vs *Dense-only (chỉ semantic)*
+
+Chạy lại evaluation:
+
+```bash
+.venv/bin/python -m group_project.evaluation.eval_pipeline            # full 23 câu
+.venv/bin/python -m group_project.evaluation.eval_pipeline --limit 5  # chạy thử, tiết kiệm quota
+```
 
 ---
 
 ### Yêu Cầu Chung
 
-1. **Tích hợp pipeline** Task 1-10 mà cả nhóm đã xây dựng
-2. **Demo hoạt động được** trong buổi trình bày (chạy local hoặc deploy)
-3. **Evaluation pipeline** chạy được và có báo cáo kết quả
-4. **Code push lên repository** chung của nhóm
-5. **README** mô tả kiến trúc và phân công (xem `group_project/README.md`)
+1. [x] **Tích hợp pipeline** Task 1-10 mà cả nhóm đã xây dựng
+2. [x] **Demo hoạt động được** — Streamlit (`app.py`) và FastAPI + HTML (`api.py` + `index.html`)
+3. [x] **Evaluation pipeline** chạy được và có báo cáo kết quả (`results.md`)
+4. [x] **Code push lên repository** chung của nhóm
+5. [x] **README** mô tả kiến trúc và phân công (xem bên dưới + `group_project/README.md`)
 
 ---
 
 ### Kiến Trúc Hệ Thống
 
+**Chủ đề corpus:** Thương mại điện tử Việt Nam — 3 văn bản luật (Doanh nghiệp 2020,
+TMĐT 2025, Giáo dục ĐH 2018) + 7 bài hướng dẫn Người bán Shopee.
+
 ```
-[Vẽ diagram kiến trúc ở đây]
+┌─────────────────────────── INGESTION (Task 1-3) ────────────────────────────┐
+│                                                                             │
+│  Task 1  luật VN (PDF)      ──┐                                             │
+│          data/landing/legal/  │                                             │
+│                               ├──► Task 3: markitdown ──► data/standardized/│
+│  Task 2  Shopee Seller Edu  ──┘     (PDF/JSON → .md)          *.md          │
+│          crawl4ai → JSON                                                    │
+│          data/landing/news/                                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                                        ▼
+┌─────────────────────── INDEXING (Task 4) ───────────────────────────────────┐
+│  RecursiveCharacterTextSplitter (800 ký tự / overlap 100)  →  4176 chunks    │
+│  Embedding: paraphrase-multilingual-MiniLM-L12-v2 (384d)                     │
+│  Vector store: ChromaDB (cosine), collection "ecommerce_docs"                │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                     ┌──────────────────┴──────────────────┐
+                     ▼                                     ▼
+       ┌──────────────────────────┐          ┌──────────────────────────┐
+       │  Task 5 Semantic Search  │          │  Task 6 Lexical Search   │
+       │  ChromaDB cosine         │          │  BM25Okapi (rank-bm25)   │
+       │  → score = 1 - distance  │          │  k1=1.5, b=0.75          │
+       └──────────────┬───────────┘          └───────────┬──────────────┘
+                      │        cùng bộ 4176 chunks       │
+                      └──────────────┬───────────────────┘
+                                     ▼
+                      ┌──────────────────────────────┐
+                      │  Task 7 RRF Fusion           │
+                      │  RRF(d) = Σ 1/(k + rank), k=60│
+                      └──────────────┬───────────────┘
+                                     ▼
+                      ┌──────────────────────────────────────────┐
+                      │  Task 9 Retrieval Pipeline               │
+                      │                                          │
+                      │  cosine GỐC của Task 5 < 0.52 ?          │
+                      │     ├── không → kết quả hybrid           │
+                      │     └── có    → Task 8 PageIndex fallback│
+                      │                                          │
+                      │  (dùng cosine gốc, KHÔNG dùng điểm RRF — │
+                      │   RRF top-1 luôn ≈ 1/61 ≈ 0.0164 bất kể  │
+                      │   liên quan hay không)                   │
+                      └──────────────┬───────────────────────────┘
+                                     ▼
+                      ┌──────────────────────────────────────────┐
+                      │  Task 10 Generation                      │
+                      │  reorder_for_llm() chống lost-in-middle  │
+                      │    [1,2,3,4,5] → [1,3,5,4,2]             │
+                      │  format_context() gắn nhãn nguồn         │
+                      │  LLM: gpt-4o-mini qua OpenRouter         │
+                      │  temp=0.3, top_p=0.9 → answer + citation │
+                      │  không đủ evidence → từ chối, không gọi LLM│
+                      └──────────────┬───────────────────────────┘
+                                     ▼
+              ┌──────────────────────┴───────────────────────┐
+              ▼                                              ▼
+    ┌──────────────────┐                        ┌────────────────────────┐
+    │  UI: Streamlit   │                        │  UI: FastAPI + HTML    │
+    │  app.py          │                        │  api.py + index.html   │
+    └──────────────────┘                        └────────────────────────┘
+
+┌─────────────────────── EVALUATION (group_project) ──────────────────────────┐
+│  golden_dataset.json (23 Q&A)  →  eval_pipeline.py                          │
+│  RAGAS: faithfulness / answer_relevancy / context_recall / context_precision│
+│  Judge LLM: OpenRouter | Embeddings: local (OpenRouter không có embeddings)  │
+│  A/B: hybrid (semantic+BM25) vs dense-only  →  results.md                   │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ### Phân Công Công Việc
 
-| Thành viên | MSSV | Nhiệm vụ | Trạng thái |
+> ⚠️ **Cần điền tay:** cột MSSV và tên đầy đủ — không có trong repo nên để trống.
+> Cột *Nhiệm vụ* dưới đây tổng hợp từ git log (`git log --author=...`), sửa lại nếu lệch.
+
+| Thành viên (git) | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+| `Đặng Thái Nam Sơn` | | **Role 1 — Team Leader.** Khởi tạo repo nhóm, Task 1-3, tích hợp & test toàn pipeline 10 task, chỉnh UI, quản lý môi trường/venv | ✅ Xong |
+| `Nguyễn Nam Anh` | | **Role 2 — Data & Pipeline.** Task 4 (chunking & indexing), Task 7 (rerank RRF), Task 9 (retrieval pipeline + fallback), bổ sung văn bản luật cho Task 1 | ✅ Xong |
+| `Trần Đình Đăng` | | **Role 3 — Retrieval.** Task 2 (crawl Shopee Seller Edu), chốt embedding model `paraphrase-multilingual-MiniLM-L12-v2`, Task 5 (semantic search) | ✅ Xong |
+| `Chu Thành Dũng` (23001506@hus.edu.vn) | | **Role 4 — Evaluation & QA.** Task 3 (markdown conversion), Task 6 (BM25), golden dataset 23 câu Q&A, dựng RAGAS eval pipeline | ✅ Xong |
+
+
+**Phần chưa hoàn thành:**
+
+| Hạng mục | Trạng thái | Ghi chú |
+|---|---|---|
+| Task 8 — PageIndex | ⚠️ Chưa chạy thật | Chưa có `PAGEINDEX_API_KEY`. Code đã viết và degrade an toàn (trả `[]`) nên pipeline không sập, nhưng schema `retrieved_nodes` chưa verify được với API thật |
+| `evaluate_with_deepeval()` | ⏭️ Bỏ qua | Đề cho chọn 1 framework — nhóm chọn RAGAS |
+| Chất lượng corpus news | ⚠️ Hạn chế | 7 bài Shopee crawl về là trang mục lục, nội dung chủ yếu là link "Xem TẠI ĐÂY". Nên crawl thêm 1 tầng vào `banhang.shopee.vn/edu/article/<id>` để tăng context_recall |
 
 ---
 

@@ -54,6 +54,7 @@ def retrieve(
     top_k: int = DEFAULT_TOP_K,
     score_threshold: float = SCORE_THRESHOLD,
     use_reranking: bool = True,
+    use_lexical: bool = True,
 ) -> list[dict]:
     """
     Retrieval pipeline hoàn chỉnh với fallback logic.
@@ -83,12 +84,13 @@ def retrieve(
             'source': str  # 'hybrid' hoặc 'pageindex'
         }
     """
-    # Step 1: Run semantic + lexical search
+    # Step 1: Run semantic (+ lexical nếu bật) search
     dense_results = semantic_search(query, top_k=top_k * 2)
-    sparse_results = lexical_search(query, top_k=top_k * 2)
+    sparse_results = lexical_search(query, top_k=top_k * 2) if use_lexical else []
 
-    # Step 2: Merge with RRF
-    merged = rerank_rrf([dense_results, sparse_results], top_k=top_k * 2)
+    # Step 2: Merge with RRF — dense-only thì chỉ có 1 ranked list
+    ranked_lists = [dense_results] + ([sparse_results] if use_lexical else [])
+    merged = rerank_rrf(ranked_lists, top_k=top_k * 2)
     for item in merged:
         item["source"] = "hybrid"
 
