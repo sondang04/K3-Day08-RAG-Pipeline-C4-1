@@ -55,7 +55,7 @@ EMBEDDING_DIM = 1024
 
 # ChromaDB: local persistent, không cần Docker, dễ dùng, hỗ trợ cosine similarity.
 VECTOR_STORE = "chromadb"
-COLLECTION_NAME = "university_services_docs"
+COLLECTION_NAME = "ecommerce_docs"
 
 
 # =============================================================================
