@@ -26,7 +26,8 @@ def semantic_search(query: str, top_k: int = 10) -> list[dict]:
         }
         Sorted by score descending.
     """
-    # Dùng lại singleton của Task 4 để đảm bảo query và corpus cùng embedding model
+    # Import tương đối (có dấu chấm) để đồng nhất với các module khác trong src/
+    # và để `from src.task5_semantic_search import ...` trong tests chạy được.
     from .task4_chunking_indexing import get_collection, get_embedding_model
 
     collection = get_collection()
@@ -45,15 +46,14 @@ def semantic_search(query: str, top_k: int = 10) -> list[dict]:
 
     output = []
     for doc, meta, dist in zip(
-        results["documents"][0], results["metadatas"][0], results["distances"][0]
+        results["documents"][0],
+        results["metadatas"][0],
+        results["distances"][0],
     ):
-        # ChromaDB (hnsw:space=cosine) trả cosine distance → similarity = 1 - distance
-        score = max(0.0, 1.0 - dist)
-        output.append({
-            "content": doc,
-            "score": round(score, 4),
-            "metadata": meta or {},
-        })
+        # ChromaDB lưu cosine distance = 1 - cosine_similarity
+        # distance=0 → identical (score=1), distance=1 → perpendicular (score=0)
+        score = round(max(0.0, 1.0 - dist), 4)
+        output.append({"content": doc, "score": score, "metadata": meta or {}})
 
     output.sort(key=lambda x: x["score"], reverse=True)
     return output[:top_k]

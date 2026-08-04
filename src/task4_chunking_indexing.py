@@ -48,10 +48,10 @@ CHUNK_SIZE = 800
 CHUNK_OVERLAP = 100
 CHUNKING_METHOD = "recursive"  # "recursive" | "markdown_header" | "semantic"
 
-# BAAI/bge-m3: mô hình đa ngôn ngữ, hỗ trợ tiếng Việt và tiếng Anh rất tốt,
-# 1024 chiều cho độ chính xác cao, không cần API key.
-EMBEDDING_MODEL = "BAAI/bge-m3"  # Multilingual, tốt cho tiếng Việt lẫn tiếng Anh
-EMBEDDING_DIM = 1024
+# paraphrase-multilingual-MiniLM-L12-v2: ~500MB, hỗ trợ 50+ ngôn ngữ tốt,
+# nhanh hơn bge-m3, phù hợp cho tiếng Việt lẫn tiếng Anh trong dự án này.
+EMBEDDING_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"  # Multilingual, nhanh, nhẹ
+EMBEDDING_DIM = 384
 
 # ChromaDB: local persistent, không cần Docker, dễ dùng, hỗ trợ cosine similarity.
 VECTOR_STORE = "chromadb"
